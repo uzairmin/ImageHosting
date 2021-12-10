@@ -17,7 +17,7 @@ class EmailAuth
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {
+    {//Checking user email is valid or not.
         try
         {
             $email = $request->email;

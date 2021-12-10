@@ -14,7 +14,7 @@ use App\Services\ConnectionDb;
 class SignupController extends Controller
 {
     function signingup(SignupValidation $request)
-    {
+    {//Signing in the user and sending confirmation on his mail.
         try
         {
             $table = "users";
@@ -25,23 +25,24 @@ class SignupController extends Controller
             $email = $request->email;
             $password = Hash::make($request->password);
             $age = $request->age;
-            $picture = $request->file('picture')->store('image');
+            $picture = $request->file('path')->store('profile');
+            $path = $_SERVER['HTTP_HOST']."/profile/storage/".$picture;
             $token = $token;
             $document = array( 
                 "name" => $name,
-                "picture" => $picture,
+                "path" => $path,
                 "email" => $email, 
                 "password" => $password,
                 "age" => $age,
-                "active" => 1,
                 "token" => $token,
-                "otp" => $otp
+                "active" => 0,
+                "otp" => 0
             );
             $collection->insertOne($document);
             $details = ['title'=>'Verify to continue',
-                    'body'=>'http://127.0.0.1:8000/api/confirmation/'.$email.'/'.$token
+                    'body'=>'http://127.0.0.1:8000/user/confirmation/'.$email.'/'.$token
                 ];
-            Mail::to($email)->send(new TestMail($details));
+            dispatch(new MailJob($email, $details));
             return response()->json(['message'=> 'To complete signup process please verify your account from the mail Sent...']);
         }    
         catch(\Exception $show_error)    
@@ -50,7 +51,7 @@ class SignupController extends Controller
         }
     }
     public function checkLogged($email,$token)
-    {
+    {//Check whether user is logged in or not.
         try
         {
             $table = "users";
@@ -69,7 +70,7 @@ class SignupController extends Controller
         }
     }
     function deactivate(EmailValidation $request)
-    {
+    {//Will deactivate or temporary close user account.
         try
         {
             $table = "users";

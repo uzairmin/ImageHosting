@@ -23,13 +23,7 @@ use App\Http\Controllers\ShareableController;
 
 Route::group(['middleware' => "accessAuth"], function()
 {
-    Route::post('/list_images',[ListingController::class,'listing']);
-    Route::post('/search_image',[ListingController::class,'searchImage']);
-    Route::post('/make_private',[PrivatePublicController::class,'makePrivate']);
-    Route::post('/make_public',[PrivatePublicController::class,'makePublic']);
-    Route::post('/make_hidden',[PrivatePublicController::class,'makeHidden']);
-    Route::post('/link',[ShareableController::class,'shareLink']);
-    Route::post('/show_image',[ShareableController::class,'showLink']);
+    Route::post('/change_access',[PrivatePublicController::class,'changeAccess']);
 });
 Route::group(['middleware' => "tokenAuth"], function()
 {
@@ -38,6 +32,10 @@ Route::group(['middleware' => "tokenAuth"], function()
     Route::post('/add_access',[ImageController::class,'addAccess']);
     Route::post('/remove_access',[ImageController::class,'removeAccess']);
     Route::post('/remove_all_access',[ImageController::class,'removeAllAccess']);
+    Route::post('/list_images',[ListingController::class,'listing']);
+    Route::post('/search_image',[ListingController::class,'searchImage']);
+    Route::post('/link',[ShareableController::class,'shareLink']);
+    Route::post('/show_image',[ShareableController::class,'showLink']);
 });
 Route::any('/storage/images/{filename}',function(Request $request, $filename)
 {

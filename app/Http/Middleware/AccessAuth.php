@@ -17,10 +17,11 @@ class AccessAuth
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {
+    {//Checking whether user is trying to access his picture or not.
         try
         {
             $token = $request->token;
+            $picId = new \MongoDB\BSon\ObjectId($request->pic_id);
             $data = NULL;
             $table = "users";
             $user = new ConnectionDb();
@@ -28,7 +29,19 @@ class AccessAuth
             $data = $collection->findOne(['remember_token'=>$token]);
             if($data!=NULL)
             {
-                return $next($request);
+                $userId = $data["_id"];
+                $table = "images";
+                $user = new ConnectionDb();
+                $collection = $user->setConnection($table);
+                $data1 = $collection->findOne(['user_id'=>$userId,'_id'=>$picId]);
+                if($data1!=NULL)
+                {
+                    return $next($request);
+                }
+                else
+                {
+                    return response()->json(['message'=> 'Wrong Credential...']);
+                }
             }
             else
             {
@@ -36,7 +49,7 @@ class AccessAuth
             }
         }    
         catch(\Exception $show_error)    
-        {        
+        {   
             return response()->json(['Error' => $show_error->getMessage()], 500);    
         }
     }

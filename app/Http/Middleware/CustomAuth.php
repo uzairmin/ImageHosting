@@ -17,7 +17,7 @@ class CustomAuth
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {
+    {//Checking user is logged in or not.
         try
         {
             $token = $request->token;

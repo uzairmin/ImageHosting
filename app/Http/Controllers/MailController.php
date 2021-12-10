@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\mail;
 
 
 class MailController extends Controller
-{
+{//Temporary mail
     function mail()
     {
         $details = ['title'=>'Hello Mailer',

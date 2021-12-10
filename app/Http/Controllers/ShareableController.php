@@ -8,7 +8,7 @@ use App\Services\ConnectionDb;
 class ShareableController extends Controller
 {
     function accessable($userId, $picId)
-    {
+    {//Check whether user can access that link or not.
         try
         {
             $table = "users";
@@ -38,7 +38,7 @@ class ShareableController extends Controller
         }
     }
     function selfCheck($picId,$userId)
-    {
+    {//Checking whether the one trying to access image is user or not.
         try
         {
             $table = "images";
@@ -58,7 +58,7 @@ class ShareableController extends Controller
         }
     }
     function shareLink(Request $request)
-    {
+    {//Generate link for an image.
         try
         {
             $token = $request->token;
@@ -86,7 +86,7 @@ class ShareableController extends Controller
         }        
     }
     function showLink(Request $request)
-    {
+    {//Show specific image through link. Check whether it is private, public or hidden. Check whether access is same or not.
         try
         {
             $token = $request->token;

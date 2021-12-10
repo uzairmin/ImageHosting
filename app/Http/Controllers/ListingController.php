@@ -36,6 +36,24 @@ class ListingController extends Controller
             return response()->json(['Error' => $show_error->getMessage()], 500);    
         }
     }
+    function checkAccess($token,$search,$format)
+    {
+        $table = "users";
+        $user = new ConnectionDb();
+        $collection = $user->setConnection($table);
+        $data = $collection->findOne(['remember_token'=>$token]);
+        $userId = $data["_id"];
+        $table = "images";
+        $user = new ConnectionDb();
+        $collection = $user->setConnection($table);
+        $data = $collection->findOne([$format=>$search]);
+        $user = $data["user_id"];
+        if($user == $userId)
+        {
+            return true;
+        }
+        return false;
+    }
     function searchImage(Request $request)
     {//Search a specific image.
         try
@@ -46,9 +64,16 @@ class ListingController extends Controller
             $token = $request->token;
             $search = $request->search;
             $format = $request->format;
-            $pictures = $collection->find([$format=>$search]);
-            $photosArr = json_decode(json_encode($pictures->toArray(),true));
-            return response()->json(['message'=> 'Photos are :',$photosArr]);
+            $check = self::checkAccess($token,$search,$format);
+            if($check == true)
+            {
+                $pictures = $collection->findOne([$format=>$search]);
+                return response()->json(['message'=> 'Photos are :',$pictures]);
+            }
+            else
+            {
+                return response()->json(['message'=> 'You are not authenticated...']);
+            }
         }    
         catch(\Exception $show_error)    
         {        

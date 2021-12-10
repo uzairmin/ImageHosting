@@ -20,22 +20,22 @@ class ForgetPasswordController extends Controller
 {
     function checkOtp(ForgetPasswordValidation $request)
     {
-        $token = $request->token;
+        $email = $request->email;
         $otp = $request->otp;
         $password = $request->new_password;
         $table = "users";
         $user = new ConnectionDb();
         $collection = $user->setConnection($table);
-        $data = $collection->findOne(["otp"=>(int)$otp,"remember_token"=>$token]);
-        if($data["email"])
+        $data = $collection->findOne(["otp"=>(int)$otp,"email"=>$email]);
+        if($data!=NULL)
         {
             $password = Hash::make($password);
-            $collection->updateOne(array("remember_token"=>$token), array('$set'=>array("password"=>$password)));   
+            $collection->updateOne(array("email"=>$email), array('$set'=>array("password"=>$password)));   
             return response()->json(['message'=> 'New Password Updated']);
         }
         else
         {
-            return response()->json(['message'=> 'OTP not matched...']);
+            return response()->json(['Error'=> 'OTP not matched...']);
         }
     }
     function forgetPassword(EmailValidation $request)
@@ -47,8 +47,7 @@ class ForgetPasswordController extends Controller
             $user = new ConnectionDb();
             $collection = $user->setConnection($table);
             $email = $request->email;
-            $token = $request->token;
-            $collection->updateOne(array("remember_token"=>$token), array('$set'=>array("otp"=>$otp)));
+            $collection->updateOne(array("email"=>$email), array('$set'=>array("otp"=>$otp)));
             $details = ['title'=>'This is your OTP number','body'=>'OTP is '.$otp];
             Mail::to($email)->send(new TestMail($details));
             return response()->json(['message'=> 'Enter your otp given in your email']);

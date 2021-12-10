@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
-class ImageValidation extends FormRequest
+class AccessValidation extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,7 @@ class ImageValidation extends FormRequest
     public function rules()
     {
         return [
-            'email'=>'required|string|email',     
-            //  'picture'=>'mimes:jpeg,jpg,png,gif|required|max:20000'
+            'access'=>'required|string'
         ];
     }
 }

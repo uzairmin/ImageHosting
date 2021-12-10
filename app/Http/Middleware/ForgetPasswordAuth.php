@@ -17,7 +17,7 @@ class ForgetPasswordAuth
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {
+    {//Checking whether user email is valid for forget password.
         try
         {
             $email = $request->email;

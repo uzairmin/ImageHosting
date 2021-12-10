@@ -42,6 +42,7 @@ Route::group(['middleware' => "tokenAuth"], function()
     Route::post('/new_name',[LoginController::class,'updateName']);
     Route::post('/email_updated',[LoginController::class,'updateEmail']);
     Route::post('/update_age',[LoginController::class,'updateAge']);
+    Route::post('/update_profile',[LoginController::class,'updateProfile']);    
     Route::post('/show_user',[ShowController::class,'showUser']);
     Route::post('/user_deactivate',[SignupController::class,'deactivate']);
     Route::post('/logout',[LogoutController::class,'loggingOut']);

@@ -12,6 +12,7 @@ use Firebase\JWT\Key;
 use MongoDB\Client as Mongo;
 use App\Services\ConnectionDb;
 use App\Http\Requests\LoginValidation;
+use App\Http\Requests\EmailValidation;
 use App\Http\Requests\UpdateEmailValidation;
 use App\Http\Requests\UpdateNameValidation;
 use App\Http\Requests\UpdatePasswordValidation;
@@ -125,6 +126,25 @@ class LoginController extends Controller
             return response()->json(['Error' => $show_error->getMessage()], 500);    
         }
     }
+    function updateProfile(EmailValidation $request)
+    {//Updating user profile picture.
+        try
+        {
+            $table = "users";
+            $user = new ConnectionDb();
+            $collection = $user->setConnection($table);
+            $email = $request->email;
+            $token = $request->token;
+            $picture = $request->file('path')->store('profile');
+            $path = $_SERVER['HTTP_HOST']."/profile/storage/".$picture;
+            $collection->updateOne(array("remember_token"=>$token), array('$set'=>array("path"=>$path)));
+            return response()->json(['message'=> 'Profile picture is updated...']);
+        }    
+        catch(\Exception $show_error)    
+        {        
+            return response()->json(['Error' => $show_error->getMessage()], 500);    
+        }
+    }
     function updateAge(UpdateAgeValidation $request)
     {//Updating user age.
         try
@@ -143,13 +163,33 @@ class LoginController extends Controller
             return response()->json(['Error' => $show_error->getMessage()], 500);    
         }
     }
+    function checkConfirmation($email)
+    {
+        $table = "users";
+        $user = new ConnectionDb();
+        $collection = $user->setConnection($table);
+        $data = $collection->findOne(['email'=>$email]);
+        if($data["active"]==1)
+        {
+            return true;
+        }
+        return false;
+    }
     function loggingIn(LoginValidation $request)
     {//Logging in.
         try
         {
             $email = $request->email;
             $password = $request->password;
-            return self::jwtToken($email,$password);
+            $check = self::checkConfirmation($email);
+            if($check == true)
+            {
+                return self::jwtToken($email,$password);
+            }
+            else
+            {
+                return response()->json(['message'=> 'Please confirm your email...']);
+            }
         }    
         catch(\Exception $show_error)    
         {        

@@ -17,7 +17,7 @@ class SignupAuth
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {
+    {//checking whether user is using same email or not.
         try
         {
             $email = $request->email;

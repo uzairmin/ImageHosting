@@ -126,7 +126,7 @@ class ImageController extends Controller
             $collection = $user->setConnection($table);
             $document = array( 
                 "picture" => $path, 
-                "data" => date("Y-m-d"),
+                "date" => date("Y-m-d"),
                 "time" => date("h:i:sa"),
                 "extension" => $extension,
                 "access" => "Hidden",
@@ -160,11 +160,11 @@ class ImageController extends Controller
             if($userId1==$userId)
             {
                 $collection->deleteOne(['user_id'=>$userId, '_id' => $imageId]);
-                return response->json(["Deleted"]);
+                return response()->json(["Deleted..."]);
             }
             else
             {
-                return response->json(["This image can't be deleted by this user..."]);
+                return response()->json(["This image can't be deleted by this user..."]);
             }
         }    
         catch(\Exception $show_error)    
