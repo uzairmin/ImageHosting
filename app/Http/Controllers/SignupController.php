@@ -10,6 +10,7 @@ use App\Mail\TestMail;
 use App\Http\Requests\SignupValidation;
 use App\Http\Requests\EmailValidation;
 use App\Services\ConnectionDb;
+use App\Jobs\MailJob;
 
 class SignupController extends Controller
 {

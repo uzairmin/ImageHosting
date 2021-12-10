@@ -8,7 +8,7 @@ class ConnectionDb
 {    
     public function setConnection($table)    
     {        
-        $collection=(new mongo)->ImageHosting->$table;        
+        $collection=(new mongo)->ImageHosting1->$table;        
         return $collection;    
     }
 }
