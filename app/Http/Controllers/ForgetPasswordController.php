@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Mail\TestMail;
+use App\Jobs\MailJob;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use MongoDB\Client as Mongo;
@@ -49,7 +50,7 @@ class ForgetPasswordController extends Controller
             $email = $request->email;
             $collection->updateOne(array("email"=>$email), array('$set'=>array("otp"=>$otp)));
             $details = ['title'=>'This is your OTP number','body'=>'OTP is '.$otp];
-            Mail::to($email)->send(new TestMail($details));
+            dispatch(new MailJob($email, $details));
             return response()->json(['message'=> 'Enter your otp given in your email']);
         }    
         catch(\Exception $show_error)    

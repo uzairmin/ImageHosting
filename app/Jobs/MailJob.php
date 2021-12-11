@@ -2,7 +2,7 @@
 
 
 namespace App\Jobs;
-use App\Mail\VarificationMail;
+use App\Mail\TestMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,6 +32,6 @@ class MailJob implements ShouldQueue
      */    
     public function handle()    
     {        
-        Mail::to($this->email)->send(new VarificationMail($this->Details));    
+        Mail::to($this->email)->send(new TestMail($this->Details));    
     }
 }
